@@ -1,0 +1,60 @@
+# Make sure the script is being executed with superuser privileges.
+# Get the username (login).
+# Get the real name (contents for the description field).
+# Get the password.
+# Create the user with the password.
+# Check to see if the useradd command succeeded.
+# Set the password.
+# Check to see if the passwd command succeeded.
+# Force password change on first login.
+# Display the username, password, and the host where the user was
+created.
+#!/bin/bash
+#script to create user and take input automatically
+
+if[[ "${UID}" -ne 0 ]]
+then
+ echo 'Please run with sudo or as root'
+ exit 1
+fi
+
+#Get the username
+read -p 'Enter the username: ' USERNAME
+
+#Get the realname
+read -p 'Enter the realname of user: ' COMMENT
+
+#Get the password
+read -p 'Enter the password: ' PASSWORD
+
+#created the user
+useradd -c ${COMMENT} -m ${USERNAME}
+
+if[[ "{?}" -ne 0}
+then
+ echo 'The account could not be created'
+ exit1
+fi
+
+#create the password
+echo ${PASSWORD} | passwd --stdin ${USERNAME}
+
+if [[ "${?}" -ne 0 ]]
+then
+ echo 'The password could not be set'
+ exit 1
+fi
+#newpassword on first login
+passwd -e ${USERNAME}
+
+#display user,pass and hostname
+echo
+echo 'username:'
+echo "${USERNAME}"
+echo
+echo 'password:'
+echo "${PASSWORD}"
+echo
+echo 'host:'
+echo "${HOSTNAME}"
+exit 0
